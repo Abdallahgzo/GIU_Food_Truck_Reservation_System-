@@ -1,0 +1,78 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" version="28.1.2">
+  <diagram id="FoodTruckERD" name="ERD">
+    <mxGraphModel dx="1209" dy="1894" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="dMxwny2wDI-VxNewR4rI-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1" source="users">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="240.23809523809518" y="80" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="users" value="Users&#xa;userId (PK)&#xa;name&#xa;email&#xa;password&#xa;role&#xa;birthDate&#xa;createdAt" style="shape=rectangle;whiteSpace=wrap;rounded=1;fillColor=#dae8fc;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="200" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="trucks" value="Trucks&#xa;truckId (PK)&#xa;truckName&#xa;truckLogo&#xa;ownerId (FK)&#xa;truckStatus&#xa;orderStatus&#xa;createdAt" style="shape=rectangle;whiteSpace=wrap;rounded=1;fillColor=#ffe6cc;" parent="1" vertex="1">
+          <mxGeometry x="300" y="40" width="220" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="menuitems" value="MenuItems&#xa;itemId (PK)&#xa;truckId (FK)&#xa;name&#xa;description&#xa;price&#xa;category&#xa;status&#xa;createdAt" style="shape=rectangle;whiteSpace=wrap;rounded=1;fillColor=#e1d5e7;" parent="1" vertex="1">
+          <mxGeometry x="300" y="300" width="220" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="orders" value="Orders&#xa;orderId (PK)&#xa;userId (FK)&#xa;truckId (FK)&#xa;orderStatus&#xa;totalPrice&#xa;scheduledPickupTime&#xa;estimatedEarliestPickup&#xa;createdAt" style="shape=rectangle;whiteSpace=wrap;rounded=1;fillColor=#d5e8d4;" parent="1" vertex="1">
+          <mxGeometry x="600" y="40" width="260" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="orderitems" value="OrderItems&#xa;orderItemId (PK)&#xa;orderId (FK)&#xa;itemId (FK)&#xa;quantity&#xa;price" style="shape=rectangle;whiteSpace=wrap;rounded=1;fillColor=#fff2cc;" parent="1" vertex="1">
+          <mxGeometry x="600" y="320" width="220" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="carts" value="Carts&#xa;cartId (PK)&#xa;userId (FK)&#xa;itemId (FK)&#xa;quantity&#xa;price" style="shape=rectangle;whiteSpace=wrap;rounded=1;fillColor=#f8cecc;" parent="1" vertex="1">
+          <mxGeometry x="40" y="300" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="sessions" value="Sessions&#xa;id (PK)&#xa;userId (FK)&#xa;token&#xa;expiresAt" style="shape=rectangle;whiteSpace=wrap;rounded=1;fillColor=#cfe2f3;" parent="1" vertex="1">
+          <mxGeometry x="40" y="520" width="200" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="rel1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="trucks" target="users" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="menuitems" target="trucks" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="orders" target="users" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="551" y="160" />
+              <mxPoint x="551" />
+              <mxPoint x="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="orders" target="trucks" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="orderitems" target="orders" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="orderitems" target="menuitems" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="carts" target="users" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="carts" target="menuitems" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="sessions" target="users" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="20" y="230" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="30" y="590" />
+              <mxPoint x="30" y="370" />
+              <mxPoint x="20" y="370" />
+              <mxPoint x="20" y="130" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
