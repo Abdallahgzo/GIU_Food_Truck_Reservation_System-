@@ -171,6 +171,67 @@ function handlePrivateBackendApi(app) {
     }
   });
 
+  app.get('/api/v1/trucks/myTruck', async (req, res) => {
+    try {
+      const user = await getUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      if (user.role !== 'truckOwner') {
+        return res.status(403).json({ error: 'Forbidden: Only truck owners can view their truck' });
+      }
+      if (!user.truckId) {
+        return res.status(404).json({ error: 'User has no truck' });
+      }
+      const truck = await db('FoodTruck.Trucks')
+        .where('truckId', user.truckId)
+        .first();
+      if (!truck) {
+        return res.status(404).json({ error: 'Truck not found' });
+      }
+      return res.status(200).json(truck);
+    } catch (err) {
+      console.log('error message', err.message);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  app.put('/api/v1/trucks/updateOrderStatus', async (req, res) => {
+    try {
+      const user = await getUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      if (user.role !== 'truckOwner') {
+        return res.status(403).json({ error: 'Forbidden: Only truck owners can update order status' });
+      }
+      if (!user.truckId) {
+        return res.status(404).json({ error: 'User has no truck' });
+      }
+      const { orderStatus } = req.body;
+      if (!orderStatus || typeof orderStatus !== 'string') {
+        return res.status(400).json({ error: 'orderStatus is required and must be a string' });
+      }
+      if (orderStatus !== 'available' && orderStatus !== 'unavailable') {
+        return res.status(400).json({ error: 'orderStatus must be either "available" or "unavailable"' });
+      }
+      const truck = await db('FoodTruck.Trucks')
+        .where('truckId', user.truckId)
+        .first();
+      if (!truck) {
+        return res.status(404).json({ error: 'Truck not found' });
+      }
+      const [updatedTruck] = await db('FoodTruck.Trucks')
+        .where('truckId', user.truckId)
+        .update({ orderStatus })
+        .returning('*');
+      return res.status(200).json(updatedTruck);
+    } catch (err) {
+      console.log('error message', err.message);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
 
 
 
