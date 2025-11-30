@@ -79,6 +79,38 @@ function handlePrivateBackendApi(app) {
       return res.status(500).json({ error: 'Internal server error' });
     }
   });
+  
+  app.get('/api/v1/menuItem/view/:itemId', async (req, res) => {
+    try {
+      const user = await getUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+        if (user.role !== 'truckOwner') {
+        return res.status(403).json({ error: 'Forbidden: Only truck owners can view menu items' });
+      }
+      if (!user.truckId) {
+        return res.status(404).json({ error: 'User has no truck' });
+      }
+      const itemId = parseInt(req.params.itemId);
+      if (isNaN(itemId)) {
+        return res.status(400).json({ error: 'Invalid itemId' });
+      }
+      const menuItem = await db('FoodTruck.MenuItems')
+        .where({ itemId, truckId: user.truckId })
+        .first();
+      if (!menuItem) {
+        return res.status(404).json({ error: 'Menu item not found' });
+      }
+      return res.status(200).json(menuItem);
+    }
+    catch (err) {
+      console.log('error message', err.message);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+    
+
 
   app.put('/api/v1/cart/edit/:cartId', async (req, res) => {
     try {
@@ -105,18 +137,82 @@ function handlePrivateBackendApi(app) {
         .update({ quantity })
         .returning('*');
       return res.status(200).json(updatedCartItem);
+
     } catch (err) {
       console.log('error message', err.message);
       return res.status(500).json({ error: 'Internal server error' });
     }
   });
 
+  app.put('/api/v1/menuItem/edit/:itemId', async (req, res) => {
+    try {
+      const user = await getUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      if (user.role !== 'truckOwner') {
+        return res.status(403).json({ error: 'Forbidden: Only truck owners can edit menu items' });
+      }
+      if (!user.truckId) {
+        return res.status(404).json({ error: 'User has no truck' });
+      }
+      const itemId = parseInt(req.params.itemId);
+      if (isNaN(itemId)) {
+        return res.status(400).json({ error: 'Invalid itemId' });
+      }
+      const existingItem = await db('FoodTruck.MenuItems')
+        .where({ itemId, truckId: user.truckId })
+        .first();
+      if (!existingItem) {
+        return res.status(404).json({ error: 'Menu item not found' });
+      }
+      const { name, description, price, category, status } = req.body;
+      const updateData = {};
+      if (name !== undefined) {
+        if (typeof name !== 'string' || name.trim().length === 0) {
+          return res.status(400).json({ error: 'Name must be a non-empty string' });
+        }
+        updateData.name = name.trim();
+      }
+      if (description !== undefined) {
+        updateData.description = description;
+      }
+      if (price !== undefined) {
+        if (typeof price !== 'number' || price <= 0) {
+          return res.status(400).json({ error: 'Price must be a positive number' });
+        }
+        updateData.price = price;
+      }
+      if (category !== undefined) {
+        if (typeof category !== 'string' || category.trim().length === 0) {
+          return res.status(400).json({ error: 'Category must be a non-empty string' });
+        }
+        updateData.category = category.trim();
+      }
+      if (status !== undefined) {
+        updateData.status = status;
+      }
+      if (Object.keys(updateData).length === 0) {
+        return res.status(400).json({ error: 'At least one field must be provided for update' });
+      }
+      const [updatedItem] = await db('FoodTruck.MenuItems')
+        .where({ itemId, truckId: user.truckId })
+        .update(updateData)
+        .returning('*');
+      return res.status(200).json(updatedItem);
+    } catch (err) {
+      console.log('error message', err.message);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
   app.delete('/api/v1/cart/delete/:cartId', async (req, res) => {
     try {
       const user = await getUser(req);
       if (!user) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
+      
       if (user.role !== 'customer') {
         return res.status(403).json({ error: 'Forbidden: Only customers can delete cart items' });
       }
@@ -131,6 +227,70 @@ function handlePrivateBackendApi(app) {
         .where({ cartId, userId: user.userId })
         .del();
       return res.status(200).json({ message: 'Cart item deleted successfully' });
+      catch (err) {
+      console.log('error message', err.message);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+   
+
+  app.get('/api/v1/trucks/myTruck', async (req, res) => {
+
+    try {
+      const user = await getUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      if (user.role !== 'truckOwner') {
+        return res.status(403).json({ error: 'Forbidden: Only truck owners can view their truck' });
+      }
+      if (!user.truckId) {
+        return res.status(404).json({ error: 'User has no truck' });
+      }
+      const truck = await db('FoodTruck.Trucks')
+        .where('truckId', user.truckId)
+        .first();
+      if (!truck) {
+        return res.status(404).json({ error: 'Truck not found' });
+      }
+      return res.status(200).json(truck);
+    } catch (err) {
+      console.log('error message', err.message);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  app.put('/api/v1/trucks/updateOrderStatus', async (req, res) => {
+    try {
+      const user = await getUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      if (user.role !== 'truckOwner') {
+        return res.status(403).json({ error: 'Forbidden: Only truck owners can update order status' });
+      }
+      if (!user.truckId) {
+        return res.status(404).json({ error: 'User has no truck' });
+      }
+      const { orderStatus } = req.body;
+      if (!orderStatus || typeof orderStatus !== 'string') {
+        return res.status(400).json({ error: 'orderStatus is required and must be a string' });
+      }
+      if (orderStatus !== 'available' && orderStatus !== 'unavailable') {
+        return res.status(400).json({ error: 'orderStatus must be either "available" or "unavailable"' });
+      }
+      const truck = await db('FoodTruck.Trucks')
+        .where('truckId', user.truckId)
+        .first();
+      if (!truck) {
+        return res.status(404).json({ error: 'Truck not found' });
+      }
+      const [updatedTruck] = await db('FoodTruck.Trucks')
+        .where('truckId', user.truckId)
+        .update({ orderStatus })
+        .returning('*');
+      return res.status(200).json(updatedTruck);
     } catch (err) {
       console.log('error message', err.message);
       return res.status(500).json({ error: 'Internal server error' });
