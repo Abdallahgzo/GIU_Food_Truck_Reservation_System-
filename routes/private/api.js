@@ -112,6 +112,76 @@ function handlePrivateBackendApi(app) {
 
 
 
+  app.post('/api/v1/cart/new', async (req, res) => {
+    try {
+      const user = await getUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      if (user.role !== 'customer') {
+        return res.status(403).json({ error: 'Forbidden: Only customers can add items to cart' });
+      }
+      const { itemId, quantity, price } = req.body;
+      if (itemId === undefined || itemId === null || typeof itemId !== 'number' || !Number.isInteger(itemId) || itemId <= 0) {
+        return res.status(400).json({ error: 'itemId is required and must be a positive integer' });
+      }
+      if (quantity === undefined || quantity === null || typeof quantity !== 'number' || !Number.isInteger(quantity) || quantity <= 0) {
+        return res.status(400).json({ error: 'quantity is required and must be a positive integer' });
+      }
+      if (price === undefined || price === null || typeof price !== 'number' || price <= 0) {
+        return res.status(400).json({ error: 'price is required and must be a positive number' });
+      }
+      const menuItem = await db('FoodTruck.MenuItems')
+        .where({ itemId, status: 'available' })
+        .first();
+      if (!menuItem) {
+        return res.status(404).json({ error: 'Menu item not found or not available' });
+      }
+      const existingCartItems = await db('FoodTruck.Carts')
+        .join('FoodTruck.MenuItems', 'Carts.itemId', 'MenuItems.itemId')
+        .where('Carts.userId', user.userId)
+        .select('MenuItems.truckId');
+      if (existingCartItems && existingCartItems.length > 0) {
+        const existingTruckIds = [...new Set(existingCartItems.map(item => item.truckId))];
+        if (existingTruckIds.length > 0 && !existingTruckIds.includes(menuItem.truckId)) {
+          return res.status(400).json({ message: 'Cannot order from multiple trucks' });
+        }
+      }
+      await db('FoodTruck.Carts')
+        .insert({
+          userId: user.userId,
+          itemId: itemId,
+          quantity: quantity,
+          price: price
+        });
+      return res.status(200).json({ message: 'item added to cart successfully' });
+    } catch (err) {
+      console.log('error message', err.message);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  app.get('/api/v1/cart/view', async (req, res) => {
+    try {
+      const user = await getUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      if (user.role !== 'customer') {
+        return res.status(403).json({ error: 'Forbidden: Only customers can view their cart' });
+      }
+      const cartItems = await db('FoodTruck.Carts')
+        .join('FoodTruck.MenuItems', 'Carts.itemId', 'MenuItems.itemId')
+        .where('Carts.userId', user.userId)
+        .select('Carts.cartId', 'Carts.userId', 'Carts.itemId', 'MenuItems.name as itemName', 'Carts.price', 'Carts.quantity')
+        .orderBy('Carts.cartId', 'asc');
+      return res.status(200).json(cartItems);
+    } catch (err) {
+      console.log('error message', err.message);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
   app.put('/api/v1/cart/edit/:cartId', async (req, res) => {
     try {
       const user = await getUser(req);
@@ -465,6 +535,27 @@ function handlePrivateBackendApi(app) {
         .where('userId', user.userId)
         .del();
       return res.status(200).json({ message: 'order placed successfully' });
+    } catch (err) {
+      console.log('error message', err.message);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  app.get('/api/v1/order/myOrders', async (req, res) => {
+    try {
+      const user = await getUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      if (user.role !== 'customer') {
+        return res.status(403).json({ error: 'Forbidden: Only customers can view their orders' });
+      }
+      const orders = await db('FoodTruck.Orders')
+        .join('FoodTruck.Trucks', 'Orders.truckId', 'Trucks.truckId')
+        .where('Orders.userId', user.userId)
+        .select('Orders.orderId', 'Orders.userId', 'Orders.truckId', 'Trucks.truckName', 'Orders.orderStatus', 'Orders.totalPrice', 'Orders.scheduledPickupTime', 'Orders.estimatedEarliestPickup', 'Orders.createdAt')
+        .orderBy('Orders.orderId', 'desc');
+      return res.status(200).json(orders);
     } catch (err) {
       console.log('error message', err.message);
       return res.status(500).json({ error: 'Internal server error' });
