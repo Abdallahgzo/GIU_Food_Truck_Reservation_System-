@@ -206,6 +206,38 @@ function handlePrivateBackendApi(app) {
     }
   });
 
+  app.delete('/api/v1/menuItem/delete/:itemId', async (req, res) => {
+    try {
+      const user = await getUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      if (user.role !== 'truckOwner') {
+        return res.status(403).json({ error: 'Forbidden: Only truck owners can delete menu items' });
+      }
+      if (!user.truckId) {
+        return res.status(404).json({ error: 'User has no truck' });
+      }
+      const itemId = parseInt(req.params.itemId);
+      if (isNaN(itemId)) {
+        return res.status(400).json({ error: 'Invalid itemId' });
+      }
+      const existingItem = await db('FoodTruck.MenuItems')
+        .where({ itemId, truckId: user.truckId })
+        .first();
+      if (!existingItem) {
+        return res.status(404).json({ error: 'Menu item not found' });
+      }
+      await db('FoodTruck.MenuItems')
+        .where({ itemId, truckId: user.truckId })
+        .update({ status: 'unavailable' });
+      return res.status(200).json({ message: 'menu item deleted successfully' });
+    } catch (err) {
+      console.log('error message', err.message);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
   app.delete('/api/v1/cart/delete/:cartId', async (req, res) => {
     try {
       const user = await getUser(req);
@@ -233,6 +265,25 @@ function handlePrivateBackendApi(app) {
     }
   });
 
+  app.get('/api/v1/trucks/view', async (req, res) => {
+    try {
+      const user = await getUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      if (user.role !== 'customer') {
+        return res.status(403).json({ error: 'Forbidden: Only customers can view available trucks' });
+      }
+      const trucks = await db('FoodTruck.Trucks')
+        .where({ truckStatus: 'available', orderStatus: 'available' })
+        .select('truckId', 'truckName', 'truckLogo', 'ownerId', 'truckStatus', 'orderStatus', 'createdAt')
+        .orderBy('truckId', 'asc');
+      return res.status(200).json(trucks);
+    } catch (err) {
+      console.log('error message', err.message);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
 
   app.get('/api/v1/trucks/myTruck', async (req, res) => {
 
