@@ -79,14 +79,14 @@ function handlePrivateBackendApi(app) {
       return res.status(500).json({ error: 'Internal server error' });
     }
   });
-
+  
   app.get('/api/v1/menuItem/view/:itemId', async (req, res) => {
     try {
       const user = await getUser(req);
       if (!user) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-      if (user.role !== 'truckOwner') {
+        if (user.role !== 'truckOwner') {
         return res.status(403).json({ error: 'Forbidden: Only truck owners can view menu items' });
       }
       if (!user.truckId) {
@@ -103,6 +103,41 @@ function handlePrivateBackendApi(app) {
         return res.status(404).json({ error: 'Menu item not found' });
       }
       return res.status(200).json(menuItem);
+    }
+    catch (err) {
+      console.log('error message', err.message);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+    
+
+
+  app.put('/api/v1/cart/edit/:cartId', async (req, res) => {
+    try {
+      const user = await getUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      if (user.role !== 'customer') {
+        return res.status(403).json({ error: 'Forbidden: Only customers can update cart items' });
+      }
+      const { cartId } = req.params;
+      const { quantity } = req.body;
+      if (quantity === undefined || quantity === null || typeof quantity !== 'number' || quantity <= 0 || !Number.isInteger(quantity)) {
+        return res.status(400).json({ error: 'Quantity is required and must be a positive integer' });
+      }
+      const cartItem = await db('FoodTruck.Carts')
+        .where({ cartId, userId: user.userId })
+        .first();
+      if (!cartItem) {
+        return res.status(404).json({ error: 'Cart item not found' });
+      }
+      const [updatedCartItem] = await db('FoodTruck.Carts')
+        .where({ cartId, userId: user.userId })
+        .update({ quantity })
+        .returning('*');
+      return res.status(200).json(updatedCartItem);
+
     } catch (err) {
       console.log('error message', err.message);
       return res.status(500).json({ error: 'Internal server error' });
@@ -170,13 +205,43 @@ function handlePrivateBackendApi(app) {
       return res.status(500).json({ error: 'Internal server error' });
     }
   });
-
-  app.get('/api/v1/trucks/myTruck', async (req, res) => {
+  
+  app.delete('/api/v1/cart/delete/:cartId', async (req, res) => {
     try {
       const user = await getUser(req);
       if (!user) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
+      
+      if (user.role !== 'customer') {
+        return res.status(403).json({ error: 'Forbidden: Only customers can delete cart items' });
+      }
+      const { cartId } = req.params;
+      const cartItem = await db('FoodTruck.Carts')
+        .where({ cartId, userId: user.userId })
+        .first();
+      if (!cartItem) {
+        return res.status(404).json({ error: 'Cart item not found' });
+      }
+      await db('FoodTruck.Carts')
+        .where({ cartId, userId: user.userId })
+        .del();
+      return res.status(200).json({ message: 'Cart item deleted successfully' });
+      catch (err) {
+      console.log('error message', err.message);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+   
+
+  app.get('/api/v1/trucks/myTruck', async (req, res) => {
+
+    try {
+      const user = await getUser(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
       if (user.role !== 'truckOwner') {
         return res.status(403).json({ error: 'Forbidden: Only truck owners can view their truck' });
       }
