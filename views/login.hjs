@@ -1,47 +1,65 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <head>
-      <link rel='stylesheet' href='/styles/bootstrap.min.css' />
-      <link rel='stylesheet' href='/styles/style.css' />
-      <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
-      <script src="/js/bootstrap.min.js" type="text/javascript"></script>
-      <script src="/src/login.js" type="text/javascript"></script>
-    </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - GIU Food Truck</title>
+    <link rel='stylesheet' href='/styles/bootstrap.min.css' />
+    <link rel='stylesheet' href='/styles/style.css' />
+    <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/src/login.js" type="text/javascript"></script>
   </head>
-  <body>   
-    <div>
-      <nav class="navbar navbar-inverse" style="padding-left:100px;">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="/">Home</a></li>
-          </ul>
-      </nav>
-    </div>
+  <body>
+    <nav class="navbar navbar-inverse navbar-custom">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">GIU Food Truck</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="/">Home</a></li>
+        </ul>
+      </div>
+    </nav>
 
-    <div class="center">
-      <h1>Login</h1>
-    </div>
-    <div style="padding-left: 100px">
-    <form class="form-horizontal" style="width: 70%;">
-      <div class="form-group">
-          <label for="email" class="col-sm-2 control-label">Email</label>
-          <div class="col-sm-10">
-              <input type="text" class="form-control" id="email" name="email" placeholder="Email" value="">
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-card-header">
+          <div class="auth-icon">
+            <div class="auth-icon-wrapper">🍔</div>
           </div>
-      </div>
-      <div class="form-group">
-          <label for="password" class="col-sm-2 control-label">Password</label>
-          <div class="col-sm-10">
-              <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="">
+          <h1>Welcome Back</h1>
+          <p>Sign in to your account</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <div class="auth-card-body">
+          <form id="loginForm">
+            <div class="auth-form-group">
+              <label for="email" class="auth-form-label">Email Address</label>
+              <div class="auth-input-wrapper">
+                <span class="auth-input-icon">✉</span>
+                <input type="email" class="auth-form-control" id="email" name="email" placeholder="Enter your email" required>
+              </div>
+            </div>
+            
+            <div class="auth-form-group">
+              <label for="password" class="auth-form-label">Password</label>
+              <div class="auth-input-wrapper">
+                <span class="auth-input-icon">🔒</span>
+                <input type="password" class="auth-form-control" id="password" name="password" placeholder="Enter your password" required>
+              </div>
+            </div>
+            
+            <button type="button" id="submit" class="auth-btn-primary">Login</button>
+          </form>
+
+          <div class="auth-link">
+            <p>Don't have an account? <a href="/register">Register here</a></p>
           </div>
+        </div>
       </div>
-      <div class="form-group">
-          <div class="col-sm-10 col-sm-offset-2">
-              <input id="submit" name="submit" type="button" value="Login" class="btn btn-primary">
-              Need to register? click <a href="/register">here.</a>
-          </div>
-      </div>
-  </form>
     </div>
   </body>
 </html>

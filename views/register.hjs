@@ -1,64 +1,82 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <head>
-      <link rel='stylesheet' href='/styles/bootstrap.min.css' />
-      <link rel='stylesheet' href='/styles/style.css' />
-      <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
-      <script src="/js/bootstrap.min.js" type="text/javascript"></script>
-      <script src="/src/register.js" type="text/javascript"></script>
-    </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - GIU Food Truck</title>
+    <link rel='stylesheet' href='/styles/bootstrap.min.css' />
+    <link rel='stylesheet' href='/styles/style.css' />
+    <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/src/register.js" type="text/javascript"></script>
   </head>
   <body>
-    <div>
-      <nav class="navbar navbar-inverse" style="padding-left:130px;">
-          <ul class="nav navbar-nav">
-            <li><a href="/">Home</a></li>
-          </ul>
-      </nav>
-    </div>
+    <nav class="navbar navbar-inverse navbar-custom">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">GIU Food Truck</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li><a href="/">Home</a></li>
+        </ul>
+      </div>
+    </nav>
 
-    <div class="center">
-      <h1>Register</h1>
-    </div>
-    <div style="padding-left: 100px">
-    <form class="form-horizontal" style="width: 70%;">
-      <div class="form-group">
-          <label for="name" class="col-sm-2 control-label">Name</label>
-          <div class="col-sm-10">
-              <input type="text" class="form-control" id="name" name="name" placeholder="Enter First, Middle and last Name" value="" required>
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-card-header">
+          <div class="auth-icon">
+            <div class="auth-icon-wrapper">🚚</div>
           </div>
-      </div>
-      <div class="form-group">
-          <label for="name" class="col-sm-2 control-label">Country</label>
-          <div class="col-sm-10">
-              <input type="text" class="form-control" id="country" name="country" placeholder="Enter Country" value="" required>
+          <h1>Create Account</h1>
+          <p>Join us and start ordering</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <div class="auth-card-body">
+          <form id="registerForm">
+            <div class="auth-form-group">
+              <label for="name" class="auth-form-label">Full Name</label>
+              <div class="auth-input-wrapper">
+                <span class="auth-input-icon">👤</span>
+                <input type="text" class="auth-form-control" id="name" name="name" placeholder="Enter First, Middle and Last Name" required>
+              </div>
+            </div>
+            
+            <div class="auth-form-group">
+              <label for="email" class="auth-form-label">Email Address</label>
+              <div class="auth-input-wrapper">
+                <span class="auth-input-icon">✉</span>
+                <input type="email" class="auth-form-control" id="email" name="email" placeholder="Enter your email" required>
+              </div>
+            </div>
+            
+            <div class="auth-form-group">
+              <label for="birthDate" class="auth-form-label">Birth Date</label>
+              <div class="auth-input-wrapper">
+                <span class="auth-input-icon">📅</span>
+                <input type="date" class="auth-form-control" id="birthDate" name="birthDate" required>
+              </div>
+            </div>
+            
+            <div class="auth-form-group">
+              <label for="password" class="auth-form-label">Password</label>
+              <div class="auth-input-wrapper">
+                <span class="auth-input-icon">🔒</span>
+                <input type="password" class="auth-form-control" id="password" name="password" placeholder="Enter your password (min. 6 characters)" required>
+              </div>
+              <small style="color: #000000; font-size: 12px; margin-top: 5px; display: block;">Password must be at least 6 characters long</small>
+            </div>
+            
+            <button type="button" id="register" class="auth-btn-primary">Create Account</button>
+          </form>
+
+          <div class="auth-link">
+            <p>Already have an account? <a href="/">Login here</a></p>
           </div>
+        </div>
       </div>
-      <div class="form-group">
-          <label for="name" class="col-sm-2 control-label">Birth Date</label>
-          <div class="col-sm-10">
-              <input type="date" class="form-control" id="date" name="date" placeholder="mm-dd-yyyy" value="" required>
-          </div>
-      </div>
-      <div class="form-group">
-          <label for="email" class="col-sm-2 control-label">Email</label>
-          <div class="col-sm-10">
-              <input type="text" class="form-control" id="email" name="email" placeholder="Email" value="" required>
-          </div>
-      </div>
-      <div class="form-group">
-          <label for="password" class="col-sm-2 control-label">Password</label>
-          <div class="col-sm-10">
-              <input type="password" class="form-control" id="password" name="password" placeholder="password" value="" required>
-          </div>
-      </div>
-      <div class="form-group">
-          <div class="col-sm-10 col-sm-offset-2">
-              <input id="register" name="register" type="button" value="Register" class="btn btn-primary">
-          </div>
-      </div>
-  </form>
     </div>
   </body>
 </html>
