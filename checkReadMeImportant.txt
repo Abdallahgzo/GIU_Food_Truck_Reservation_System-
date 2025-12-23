@@ -26,3 +26,5 @@ Note that you need to use same password that you used during installing postgres
 
 Also click on visual studio code extensions then search for thunder client then install it to test your backend
 (clicking ctrl + c to stop runnning server code exit by clicking)
+
+Not required to be here 
