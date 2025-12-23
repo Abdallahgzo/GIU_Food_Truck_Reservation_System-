@@ -1,22 +1,89 @@
 <!DOCTYPE html>
 <html>
   <head>
-      <link rel='stylesheet' href='/styles/bootstrap.min.css' />
-      <link rel='stylesheet' href='/styles/style.css' />
-      <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
-      <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - GIU Food Truck</title>
+    <link rel='stylesheet' href='/styles/bootstrap.min.css' />
+    <link rel='stylesheet' href='/styles/style.css' />
+    <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="text/javascript"></script>
   </head>
   <body>
-    <div>
-      <nav class="navbar navbar-inverse" style="padding-left:130px;">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="/">Home</a></li>
-          </ul>
-      </nav>
+    <nav class="navbar navbar-inverse navbar-custom">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/dashboard">GIU Food Truck</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/trucks">Browse Trucks</a></li>
+          <li><a href="/cart">Cart</a></li>
+          <li><a href="/myOrders">My Orders</a></li>
+          <li><a href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="text-center mb-3">
+        <h1>Welcome, {{ name }}!</h1>
+        <p>Your food truck ordering dashboard</p>
+      </div>
+
+      <div class="quick-actions">
+        <a href="/trucks" class="quick-action-btn">
+          <div>Browse Trucks</div>
+          <small>View available food trucks</small>
+        </a>
+        <a href="/cart" class="quick-action-btn">
+          <div>View Cart</div>
+          <small>Check your cart items</small>
+        </a>
+        <a href="/myOrders" class="quick-action-btn">
+          <div>My Orders</div>
+          <small>Track your orders</small>
+        </a>
+      </div>
+
+      <div class="how-it-works">
+        <h2>How It Works</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-title">Browse Trucks</div>
+            <div class="step-description">Explore available food trucks and their menus</div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-title">Add to Cart</div>
+            <div class="step-description">Select items and quantities from your chosen truck</div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-title">Place Order</div>
+            <div class="step-description">Schedule pickup time and confirm your order</div>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-title">Pick Up</div>
+            <div class="step-description">Collect your order at the scheduled time</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="center">
-      <h1>Welcome customer {{ name }}</h1>
-    </div>
+    <script>
+      // Logout functionality
+      $(document).ready(function() {
+        $('#logoutBtn').click(function(e) {
+          e.preventDefault();
+          // Clear session cookie by setting it to expire
+          document.cookie = 'session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+          // Redirect to login
+          location.href = '/';
+        });
+      });
+    </script>
   </body>
 </html>
