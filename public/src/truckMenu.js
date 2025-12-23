@@ -176,7 +176,7 @@ $(document).ready(function() {
     quantityInput.val(currentQuantity);
   });
 
-  // Add to cart handler
+    // Add to cart handler
   $(document).on('click', '.add-to-cart-btn', function() {
     const itemId = parseInt($(this).data('item-id'));
     const price = parseFloat($(this).data('item-price'));
@@ -191,17 +191,37 @@ $(document).ready(function() {
       return;
     }
 
+    // Validate parsed values
+    if (isNaN(itemId) || itemId <= 0) {
+      $('#alertContainer').html(`
+        <div class="alert alert-danger">
+          Invalid item ID. Please try again.
+        </div>
+      `);
+      return;
+    }
+
+    if (isNaN(price) || price <= 0) {
+      $('#alertContainer').html(`
+        <div class="alert alert-danger">
+          Invalid price. Please try again.
+        </div>
+      `);
+      return;
+    }
+
     // Disable button during request
     $(this).prop('disabled', true).text('Adding...');
 
     $.ajax({
       type: "POST",
       url: '/api/v1/cart/new',
-      data: {
+      contentType: 'application/json',
+      data: JSON.stringify({
         itemId: itemId,
         quantity: quantity,
         price: price
-      },
+      }),
       success: function(response) {
         $('#alertContainer').html(`
           <div class="alert alert-success">

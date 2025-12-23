@@ -32,6 +32,14 @@ function handlePrivateFrontEndView(app) {
         return res.render('truckMenu', { truckId: req.params.truckId });
     });
 
+    app.get('/cart', async (req, res) => {
+        const user = await getUser(req);
+        if (user.role !== 'customer') {
+            return res.status(403).send('Forbidden');
+        }
+        return res.render('cart');
+    });
+
     app.get('/testingAxios' , async (req , res) => {
 
         try {
