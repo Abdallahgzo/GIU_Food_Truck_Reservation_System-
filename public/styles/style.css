@@ -81,6 +81,16 @@ body {
   background-color: #F4EAE0;
 }
 
+.btn-secondary.active {
+  background-color: #000000;
+  color: #FAF6F0;
+}
+
+.btn-secondary.active:hover {
+  background-color: #F4DFC8;
+  color: #000000;
+}
+
 .btn-danger {
   background-color: #F44336;
   color: #FAF6F0;
