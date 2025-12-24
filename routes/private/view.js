@@ -10,7 +10,7 @@ function handlePrivateFrontEndView(app) {
         
         const user = await getUser(req);
         if(user.role == "truckOwner"){
-            return res.render('truckOwnerHomePage' , {name : user.name});
+            return res.redirect('/ownerDashboard');
         }
         // role of customer
         return res.render('customerHomepage' , {name : user.name});
@@ -38,6 +38,22 @@ function handlePrivateFrontEndView(app) {
             return res.status(403).send('Forbidden');
         }
         return res.render('cart');
+    });
+
+    app.get('/myOrders', async (req, res) => {
+        const user = await getUser(req);
+        if (user.role !== 'customer') {
+            return res.status(403).send('Forbidden');
+        }
+        return res.render('myOrders');
+    });
+
+    app.get('/ownerDashboard', async (req, res) => {
+        const user = await getUser(req);
+        if (user.role !== 'truckOwner') {
+            return res.status(403).send('Forbidden');
+        }
+        return res.render('ownerDashboard', { name: user.name });
     });
 
     app.get('/testingAxios' , async (req , res) => {

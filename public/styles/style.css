@@ -719,3 +719,37 @@ body {
     font-size: 2em;
   }
 }
+
+/* ====================================
+   Modal Customization
+   ==================================== */
+.modal-content {
+  background-color: #F4EAE0;
+  border: 2px solid #000000;
+  border-radius: 8px;
+}
+
+.modal-header {
+  background-color: #F4DFC8;
+  border-bottom: 1px solid #000000;
+  color: #000000;
+}
+
+.modal-header .close {
+  color: #000000;
+  opacity: 0.8;
+}
+
+.modal-header .close:hover {
+  opacity: 1;
+}
+
+.modal-body {
+  color: #000000;
+  background-color: #F4EAE0;
+}
+
+.modal-footer {
+  background-color: #F4DFC8;
+  border-top: 1px solid #000000;
+}
