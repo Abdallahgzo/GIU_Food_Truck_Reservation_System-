@@ -56,6 +56,22 @@ function handlePrivateFrontEndView(app) {
         return res.render('ownerDashboard', { name: user.name });
     });
 
+    app.get('/menuItems', async (req, res) => {
+        const user = await getUser(req);
+        if (user.role !== 'truckOwner') {
+            return res.status(403).send('Forbidden');
+        }
+        return res.render('menuItems');
+    });
+
+    app.get('/addMenuItem', async (req, res) => {
+        const user = await getUser(req);
+        if (user.role !== 'truckOwner') {
+            return res.status(403).send('Forbidden');
+        }
+        return res.render('addMenuItem');
+    });
+
     app.get('/testingAxios' , async (req , res) => {
 
         try {
