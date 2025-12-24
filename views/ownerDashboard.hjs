@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Dashboard - GIU Food Truck</title>
+    <link rel='stylesheet' href='/styles/bootstrap.min.css' />
+    <link rel='stylesheet' href='/styles/style.css' />
+    <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/src/ownerDashboard.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-custom">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/ownerDashboard">GIU Food Truck</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="/ownerDashboard">Dashboard</a></li>
+          <li><a href="/menuItems">Manage Menu</a></li>
+          <li><a href="/addMenuItem">Add Menu Item</a></li>
+          <li><a href="/truckOrders">View Orders</a></li>
+          <li><a href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="text-center mb-3">
+        <h1>Welcome, {{ name }}!</h1>
+        <p>Your food truck management dashboard</p>
+      </div>
+
+      <div id="alertContainer"></div>
+
+      <div id="truckInfoCard" class="card mb-3">
+        <div class="card-header">Truck Information</div>
+        <div class="card-body">
+          <div id="truckInfoContent">
+            <!-- Truck info will be loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-container mb-3">
+        <div class="stat-card">
+          <div class="stat-label">Total Menu Items</div>
+          <div class="stat-value" id="totalMenuItems">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pending Orders</div>
+          <div class="stat-value" id="pendingOrders">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Completed Orders</div>
+          <div class="stat-value" id="completedOrders">-</div>
+        </div>
+      </div>
+
+      <div class="quick-actions mb-3">
+        <a href="/addMenuItem" class="quick-action-btn">
+          <div>Add Menu Item</div>
+          <small>Add new items to your menu</small>
+        </a>
+        <a href="/menuItems" class="quick-action-btn">
+          <div>Manage Menu</div>
+          <small>View and edit menu items</small>
+        </a>
+        <a href="/truckOrders" class="quick-action-btn">
+          <div>View Orders</div>
+          <small>Manage and track orders</small>
+        </a>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Recent Orders</div>
+        <div class="card-body">
+          <div id="recentOrdersContent">
+            <!-- Recent orders will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Logout functionality
+      $(document).ready(function() {
+        $('#logoutBtn').click(function(e) {
+          e.preventDefault();
+          document.cookie = 'session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+          location.href = '/';
+        });
+      });
+    </script>
+  </body>
+</html>
+
