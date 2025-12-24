@@ -72,6 +72,14 @@ function handlePrivateFrontEndView(app) {
         return res.render('addMenuItem');
     });
 
+    app.get('/truckOrders', async (req, res) => {
+        const user = await getUser(req);
+        if (user.role !== 'truckOwner') {
+            return res.status(403).send('Forbidden');
+        }
+        return res.render('truckOrders');
+    });
+
     app.get('/testingAxios' , async (req , res) => {
 
         try {
